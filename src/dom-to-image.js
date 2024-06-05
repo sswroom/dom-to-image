@@ -70,14 +70,15 @@
         function applyOptions(clone) {
             if (options.bgcolor) clone.style.backgroundColor = options.bgcolor;
 
-            if (options.width) clone.style.width = options.width + 'px';
+			if (options.width) clone.style.width = options.width + 'px';
             if (options.height) clone.style.height = options.height + 'px';
 
-            if (options.style)
-                Object.keys(options.style).forEach(function (property) {
+			if (options.style)
+			{
+				Object.keys(options.style).forEach(function (property) {
                     clone.style[property] = options.style[property];
                 });
-
+			}
             return clone;
         }
     }
@@ -154,6 +155,7 @@
             .then(util.makeImage)
             .then(util.delay(100))
             .then(function (image) {
+				console.log("draw get image");
                 var canvas = newCanvas(domNode);
                 canvas.getContext('2d').drawImage(image, 0, 0);
                 return canvas;
@@ -451,11 +453,13 @@
 
         function makeImage(uri) {
             return new Promise(function (resolve, reject) {
+				console.log("makeImage", uri);
                 var image = new Image();
                 image.onload = function () {
                     resolve(image);
                 };
-                image.onerror = reject;
+                image.onerror = function (a, b, c, d, e) {console.log("makeImage error", a, b, c, d, e); reject(a, b, c, d, e);};
+//                image.onerror = reject;
                 image.src = uri;
             });
         }
@@ -734,8 +738,7 @@
 
         function inlineAll(node) {
             if (!(node instanceof Element)) return Promise.resolve(node);
-
-            return inlineBackground(node)
+			return inlineBackground(node)
                 .then(function () {
                     if (node instanceof HTMLImageElement)
                         return newImage(node).inline();
