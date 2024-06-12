@@ -453,13 +453,11 @@
 
         function makeImage(uri) {
             return new Promise(function (resolve, reject) {
-				console.log("makeImage", uri);
                 var image = new Image();
                 image.onload = function () {
                     resolve(image);
                 };
-                image.onerror = function (a, b, c, d, e) {console.log("makeImage error", a, b, c, d, e); reject(a, b, c, d, e);};
-//                image.onerror = reject;
+                image.onerror = reject;
                 image.src = uri;
             });
         }
